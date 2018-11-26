@@ -1,0 +1,30 @@
+{% extends "template/navbar.html" %} 
+{% block content %}
+<head>
+<title>Create A Post!</title>
+</head>
+<div class = "container">
+	<div class = "row">
+		<h1 style="color:#ee6e73">Create a post:</h1>
+	</div>
+	<div class="row">
+		<form method="post" >
+		{% csrf_token %}
+		{% for field in form %}
+			<p>
+				{{ field.label_tag }}<br>
+				{{ field }}
+				{% if field.help_text %}
+					<small style="color: grey">{{ field.help_text }}</small>
+				{% endif %}
+				{% for error in field.errors %}
+					<p style="color: red">{{ error }}</p>
+				{% endfor %}
+			</p>
+    {% endfor %}		
+		<br>
+		<input class="btn" type="submit">
+		</form>
+	</div>
+</div>
+{% endblock %}

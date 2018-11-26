@@ -1,0 +1,85 @@
+{% load static %}
+<html>
+<head>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">    	
+	
+	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous"> -->
+</head>
+<body>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+	<!-- MESSAGES CODE -->
+	{% if messages %}
+	<center>	
+		<ul class="messages" style="margin-bottom:0px;">
+			{% for message in messages %}
+				<li{% if message.tags %} class="{{ message.tags }}"{% endif %} style ='color:#111; background-color:#ffc107; border-color:#ffc107;'>{{ message }}</li>
+			{% endfor %}
+		</ul>
+	</center>
+	{% endif %}
+	<header style="background-color: #ee6e73; color: white" class ="center-align">
+		<br>
+		<h1>Welcome to WORDCRUNCH</h1>
+		<br>
+	</header>
+	<div class="container">
+		<h3 style="color:#ee6e73">Login or Create an Account:</h3>
+		<div class="row">
+			<div class="col s5 card-panel grey lighten-4">
+				<h4 style="color:#ee6e73">Signup</h4>
+				<form method="post">
+						{% csrf_token %}
+						{% for field in signup_form %}
+							<p>
+							{{ field.label_tag }}<br>
+							{{ field }}
+							{% if field.help_text %}
+								<small style="color: grey">{{ field.help_text|safe }}</small>
+							{% endif %}
+							{% for error in field.errors %}
+								<p style="color: red">{{ error }}</p>
+							{% endfor %}
+							</p>
+						{% endfor %}
+					<button class ="waves-effect waves-light btn" type="submit" name ='signup'>Sign up</button>
+					<br>
+				</form>
+				<br>
+			</div>
+			<div class="col s1"></div>
+			<div class="col s5 card-panel grey lighten-4">
+				<h4 style="color:#ee6e73">Login</h4>
+				<form method="post">
+					{% csrf_token %}
+					{{ login_form.as_p }}
+					<button class="waves-effect waves-light btn" name="login" type="submit">Login</button>
+					<br>
+				</form>
+				<br>
+			</div>
+		</div> 
+	</div>
+
+
+
+	<!-- <ul>
+		<li>
+			<a href="/login">Login</a>
+			<br>
+		</li>
+		<li>
+			<a href="/signup">Signup</a>
+		</li>
+	</ul> -->
+		
+		<!--
+		<br>
+		<a href="/logout">Logout</a>
+		<br>
+		<a href="/post">Make a Post</a>
+		<br>
+		<a href="/feed">Feed</a>
+		-->
+	</div>
+</body>

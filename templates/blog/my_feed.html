@@ -1,0 +1,80 @@
+{% extends "template/navbar.html" %} 
+{% load subtract %}
+{% block content %}
+
+<div class = "container">
+	<div class = "row">
+		<div class = "col-sm-10">
+			<h1 style="color:#ee6e73">Your Feed</h1>
+			<h5>This Feed Includes Posts From All Users You Follow!</h5>
+			<hr>
+		</div>
+	</div>
+	<div class = "col-sm-10">
+		{% for post in post_list %}
+		<div class = "well blog_post card">
+				<div class="container">
+					<br>
+					<strong><h3>{{ post.title }}<br></h3></strong>
+					<h5>by
+					<!-- code inspired by https://stackoverflow.com/questions/4270330/django-show-a-manytomanyfield-in-a-template -->
+					<a href="/user/{% for author in post.author.all %}{{ author.user }}{% endfor %}">{% for author in post.author.all %}{{ author.user }}{% endfor %}</a>
+					at {{ post.date}}
+					</h5>
+					<div class="row">
+						<div class="col s1">
+							<!-- downvote form -->
+							<form action='' method="POST">
+								{% csrf_token %}
+								<input type="hidden" value="{{ post.id }}" name="post[]">
+								<button class="btn-floating" type="submit" value="Downvote" name="downvote"><i class="small material-icons">arrow_downward</i></button>
+							</form>
+						</div>
+						<div class="col s1">
+							<!-- Score -->
+							<form>
+								<strong>Score: {{post.upvote.count|subtract:post.downvote.count}}</strong>
+							</form>
+						</div>
+						<div class="col s1">
+							<!-- upvote form -->
+							<form action='' method="POST">
+								{% csrf_token %}
+								<input type="hidden" value="{{ post.id }}" name="post[]">
+								<button class="btn-floating" type="submit" value="Upvote" name="upvote"><i class="small material-icons">arrow_upward</i></button>
+							</form>
+						</div>
+					</div>
+					
+					<!-- Post Content -->
+					<p>{{ post.content }}</p>
+					<h6>{{ post.comments.count }} Comments</h6>
+					<button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#comment{{post.id}}">Show/Hide Comments</button>
+					<div id="comment{{post.id}}" class="collapse">
+						<form action='' method="post" >
+							{% csrf_token %}
+							<input type="hidden" name="current_user[]" value="{{username}}">
+							<input type="text" name="content[]" placeholder="Enter comment here">
+							<input type="hidden" name="post_id[]" value="{{ post.id }}">
+							<input class = "btn" type="submit" value="Comment" name="comment">
+						</form>
+						<br>
+						<br>
+					{% for comment in post.comments.all %}
+						<div>
+							<div>
+								<span class="comment-header">
+									<p>By {% for author in comment.author.all %}{{ author.user }}{% endfor %} at {{comment.time}} : </p>
+								</span>
+								<p>{{comment.content}}</p>
+							</div>
+						</div>
+					{% endfor %}
+					</div>
+					<hr>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}
